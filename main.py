@@ -97,11 +97,15 @@ def add_arc_users():
         new_user = Users(id=unique_id, name=name, branch=branch, username=username)
         new_users.append(new_user)
 
-    # Add the list of new users to the database session and commit the transaction
-    db.session.add_all(new_users)
-    db.session.commit()
-
-    return 'Users added successfully'
+    try:
+        # Add the list of new categories to the database session and commit the transaction
+        db.session.add_all(new_users)
+        db.session.commit()
+        return jsonify({"message": "Users added successfully"}), 201
+    except IntegrityError as e:
+        # If a unique constraint violation occurs, roll back the transaction
+        db.session.rollback()
+        return jsonify({"error": str(e.__cause__)}), 400
 
 
 @app.route('/add_categories', methods=['POST'])
@@ -118,12 +122,6 @@ def add_arc_categories():
         isAvailable = category_data.get('isAvailable')
         created_at = datetime.now(timezone.utc)
 
-        # Check if the category already exists in the database
-        existing_category = Categories.query.filter_by(name=name).first()
-        if existing_category:
-            # If the category already exists, skip adding it
-            continue
-
         # Create a new category object
         new_category = Categories(id=unique_id, name=name, isAvailable=isAvailable, created_at=created_at)
         new_categories.append(new_category)
@@ -133,10 +131,10 @@ def add_arc_categories():
         db.session.add_all(new_categories)
         db.session.commit()
         return jsonify({"message": "Categories added successfully"}), 201
-    except IntegrityError:
+    except IntegrityError as e:
         # If a unique constraint violation occurs, roll back the transaction
         db.session.rollback()
-        return jsonify({"error": "Duplicate category name"}), 400
+        return jsonify({"error": str(e.__cause__)}), 400
 
 
 @app.route('/')
