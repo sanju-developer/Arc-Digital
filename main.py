@@ -2,6 +2,7 @@ from dotenv import load_dotenv
 import os
 
 from flask import Flask
+from flask_cors import CORS, cross_origin
 
 from blueprints.feedback import feedback_bp
 from blueprints.users import users_bp
@@ -10,9 +11,10 @@ from blueprints.categories import category_bp
 from blueprints.fruits import fruits_bp
 from blueprints.stationary import stationary_bp
 
-app = Flask(__name__)
 load_dotenv()
-
+app = Flask(__name__)
+cors = CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
 
 # Database configuration
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', '')
