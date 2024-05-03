@@ -28,7 +28,7 @@ def add_fruit():
         # Add the list of new categories to the database session and commit the transaction
         db.session.add_all(new_Data)
         db.session.commit()
-        return jsonify({"message": "Fruits added successfully"}), 201
+        return jsonify({"message": "Fruits added successfully."}), 201
     except IntegrityError as e:
         # If a unique constraint violation occurs, roll back the transaction
         db.session.rollback()
@@ -45,7 +45,7 @@ def delete_fruit(id):
     db.session.delete(fruit)
     db.session.commit()
 
-    return jsonify({"message": "Fruit deleted successfully"}), 200
+    return jsonify({"message": "Fruit deleted successfully."}), 200
 
 @fruits_bp.route('/fruits', methods=['GET'])
 def get_fruits():

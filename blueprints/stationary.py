@@ -28,7 +28,7 @@ def add_stationary():
         # Add the list of new categories to the database session and commit the transaction
         db.session.add_all(new_Data)
         db.session.commit()
-        return jsonify({"message": "Category added successfully"}), 201
+        return jsonify({"message": "Category added successfully."}), 201
     except IntegrityError as e:
         # If a unique constraint violation occurs, roll back the transaction
         db.session.rollback()
@@ -45,7 +45,7 @@ def delete_stationary(id):
     db.session.delete(stationary)
     db.session.commit()
 
-    return jsonify({"message": "Stationary item deleted successfully"}), 200
+    return jsonify({"message": "Stationary item deleted successfully."}), 200
 
 
 @stationary_bp.route('/stationary', methods=['GET'])

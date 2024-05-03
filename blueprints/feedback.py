@@ -17,17 +17,18 @@ def add_feedback():
     user_id = data.get('user_id')
     rating = data.get('rating')
     comment = data.get('comment')
+    category = data.get('category')
 
     # Check if 'user_id' is provided
-    if not user_id or not rating:
-        return jsonify({"error": "User id and rating is required"}), 400
+    if not user_id or not rating or not category:
+        return jsonify({"error": "Please provide required details."}), 400
 
     # Create a new category
-    feedback = Feedback(user_id=user_id, rating=rating, comment=comment)
+    feedback = Feedback(user_id=user_id, rating=rating, comment=comment, category=category)
 
     # Add to the database session and commit
     db.session.add(feedback)
     db.session.commit()
 
     # Return a success message with the new category details
-    return jsonify({"message": "Feedback added successfully"}), 201
+    return jsonify({"message": "Feedback added successfully."}), 201

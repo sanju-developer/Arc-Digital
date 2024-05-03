@@ -46,3 +46,5 @@ class Feedback(db.Model):
     user_id = db.Column(db.Integer, nullable=False)
     rating = db.Column(db.Integer, nullable=False)
     comment = db.Column(db.String)
+    category = db.Column(db.String, nullable=False)
+

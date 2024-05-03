@@ -28,7 +28,7 @@ def add_arc_users():
         # Add the list of new categories to the database session and commit the transaction
         db.session.add_all(new_users)
         db.session.commit()
-        return jsonify({"message": "Users added successfully"}), 201
+        return jsonify({"message": "Users added successfully."}), 201
     except IntegrityError as e:
         # If a unique constraint violation occurs, roll back the transaction
         db.session.rollback()

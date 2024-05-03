@@ -18,12 +18,12 @@ def add_category():
     # Check if 'name' is provided
     name = data.get("name")
     if not name:
-        return jsonify({"error": "Category name is required"}), 400
+        return jsonify({"error": "Category name is required."}), 400
 
     # Check if the category already exists
     existing_category = Categories.query.filter_by(name=name).first()
     if existing_category:
-        return jsonify({"error": "Category already exists"}), 400
+        return jsonify({"error": "Category already exists."}), 400
 
     # Create a new category
     new_category = Categories(name=name)
@@ -33,4 +33,4 @@ def add_category():
     db.session.commit()
 
     # Return a success message with the new category details
-    return jsonify({"message": "Category added successfully", "category": {"cid": new_category.cid, "name": new_category.name}}), 201
+    return jsonify({"message": "Category added successfully.", "category": {"cid": new_category.cid, "name": new_category.name}}), 201

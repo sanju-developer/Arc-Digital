@@ -8,9 +8,11 @@ import TextField from '@mui/material/TextField';
 
 import Store from './store';
 import './App.css';
+import Feedback from './pages/pages/feedback';
 
 function App() {
-	const { getUsers } = Store;
+	const { getUsers, setSelectedUser, selectedUser, data } = Store;
+	const { users, isLoading } = data;
 
 	useEffect(() => {
 		getUsers();
@@ -24,9 +26,16 @@ function App() {
 			<Autocomplete
 				disablePortal
 				id="combo-box-demo"
-				options={[]}
+				options={users}
+				getOptionLabel={(option: any) => `${option.id}-${option.name}`}
+				loading={isLoading}
 				renderInput={(params) => <TextField {...params} label="Please enter user id" />}
+				onChange={(_, value) => setSelectedUser(value)}
 			/>
+			<Typography variant="h3" gutterBottom>
+				Your Feedback's are valuable to us!!
+			</Typography>
+			<Feedback />
 		</Container>
 	);
 }
