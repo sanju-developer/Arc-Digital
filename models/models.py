@@ -48,3 +48,18 @@ class Feedback(db.Model):
     comment = db.Column(db.String)
     category = db.Column(db.String, nullable=False)
 
+
+# MasterFruits model
+class MasterFruitsList(db.Model):
+    __name__ = 'master_fruits_list'
+    id = db.Column(db.String, primary_key=True, unique=True, nullable=False)
+    name = db.Column(db.String(50), unique=True, nullable=False)
+    icon = db.Column(db.String(25))
+
+
+# MasterStationary model
+class MasterStationaryList(db.Model):
+    __name__ = 'master_stationary_list'
+    id = db.Column(db.String, primary_key=True, unique=True, nullable=False)
+    name = db.Column(db.String(50), unique=True, nullable=False)
+    icon = db.Column(db.String(25))

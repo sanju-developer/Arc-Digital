@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 from sqlalchemy.exc import IntegrityError
 
-from models.models import db, Fruits
+from models.models import db, Fruits, MasterFruitsList
 
 fruits_bp = Blueprint('fruits', __name__)
 
@@ -47,6 +47,7 @@ def delete_fruit(id):
 
     return jsonify({"message": "Fruit deleted successfully."}), 200
 
+
 @fruits_bp.route('/fruits', methods=['GET'])
 def get_fruits():
     # Fetch all fruits and their associated category name
@@ -60,3 +61,47 @@ def get_fruits():
         }
         for f in fruits
     ])
+
+
+# Add master fruits list
+@fruits_bp.route('/add_master_fruit_list', methods=['POST'])
+def add_master_fruit_list():
+    data = request.json  # Assuming the data comes as JSON
+
+    # Create a list to store new user objects
+    new_Data = []
+    for fruits_data in data:
+        fruit_id = fruits_data.get("id")
+        name = fruits_data.get("name")
+        icon = fruits_data.get("icon")
+
+        if not fruit_id:
+            return jsonify({"error": "Id is required."}), 400
+
+        stationary = MasterFruitsList(id=fruit_id, name=name, icon=icon)
+        new_Data.append(stationary)
+
+    try:
+        # Add the list of new categories to the database session and commit the transaction
+        db.session.add_all(new_Data)
+        db.session.commit()
+        return jsonify({"message": "Master fruits list added successfully."}), 201
+    except IntegrityError as e:
+        # If a unique constraint violation occurs, roll back the transaction
+        db.session.rollback()
+        return jsonify({"error": str(e.__cause__)}), 400
+
+
+@fruits_bp.route('/master_fruit_list', methods=['GET'])
+def get_master_fruit_list():
+    # Fetch all fruits and their associated category name
+    fruits = MasterFruitsList.query.all()
+    return jsonify([
+        {
+            "id": f.id,
+            "name": f.name,
+            "icon": f.icon,
+        }
+        for f in fruits
+    ])
+

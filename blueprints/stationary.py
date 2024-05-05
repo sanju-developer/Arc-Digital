@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 from sqlalchemy.exc import IntegrityError
 
-from models.models import db, Stationary
+from models.models import db, Stationary, MasterStationaryList
 
 stationary_bp = Blueprint('stationary', __name__)
 
@@ -60,4 +60,47 @@ def get_stationary():
             "category": s.category.name
         }
         for s in stationary
+    ])
+
+
+# Add master fruits list
+@stationary_bp.route('/add_master_stationary_list', methods=['POST'])
+def add_master_stationary_list():
+    data = request.json  # Assuming the data comes as JSON
+
+    # Create a list to store new user objects
+    new_Data = []
+    for stationary_data in data:
+        stationary_id = stationary_data.get("id")
+        name = stationary_data.get("name")
+        icon = stationary_data.get("icon")
+
+        if not stationary_id:
+            return jsonify({"error": "Id is required."}), 400
+
+        stationary = MasterStationaryList(id=stationary_id, name=name, icon=icon)
+        new_Data.append(stationary)
+
+    try:
+        # Add the list of new categories to the database session and commit the transaction
+        db.session.add_all(new_Data)
+        db.session.commit()
+        return jsonify({"message": "Master stationary list added successfully."}), 201
+    except IntegrityError as e:
+        # If a unique constraint violation occurs, roll back the transaction
+        db.session.rollback()
+        return jsonify({"error": str(e.__cause__)}), 400
+
+
+@stationary_bp.route('/master_stationary_list', methods=['GET'])
+def get_master_stationary_list():
+    # Fetch all fruits and their associated category name
+    stationary = MasterStationaryList.query.all()
+    return jsonify([
+        {
+            "id": f.id,
+            "name": f.name,
+            "icon": f.icon,
+        }
+        for f in stationary
     ])
