@@ -15,13 +15,14 @@ def add_arc_users():
     # Create a list to store new user objects
     new_users = []
     for user_data in users:
-        unique_id = user_data.get('id')
+        unique_id = user_data.get('user_id')
         name = user_data.get('name')
         branch = user_data.get('branch')
         username = user_data.get('username')
+        isAdmin = user_data.get('isAdmin')
 
         # Create a new user object and add it to the list
-        new_user = Users(id=unique_id, name=name, branch=branch, username=username)
+        new_user = Users(user_id=unique_id, name=name, branch=branch, username=username, isAdmin=isAdmin)
         new_users.append(new_user)
 
     try:
@@ -44,10 +45,11 @@ def arc_users():
     users_list = []
     for user in all_users:
         user_data = {
-            'id': user.id,
+            'user_id': user.user_id,
             'name': user.name,
             'branch': user.branch,
             'username': user.username,
+            'isAdmin': user.isAdmin
         }
         users_list.append(user_data)
 

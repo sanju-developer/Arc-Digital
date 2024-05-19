@@ -1,44 +1,15 @@
 from flask import Blueprint, request, jsonify
 from sqlalchemy.exc import IntegrityError
 
-from models.models import db, Stationary, MasterStationaryList
+from models.models import db, MasterStationaryList
 
 stationary_bp = Blueprint('stationary', __name__)
 
 
-# Add multiple stationary items
-@stationary_bp.route('/add_stationary', methods=['POST'])
-def add_stationary():
-    data = request.json  # Assuming the data comes as JSON
-
-    # Create a list to store new user objects
-    new_Data = []
-    for stationary_data in data:
-        name = stationary_data.get("name")
-        isAvailable = stationary_data.get("isAvailable")
-        cid = stationary_data.get("cid")
-
-        if not name or not cid:
-            return jsonify({"error": "Name and Category ID are required."}), 400
-
-        stationary = Stationary(name=name, isAvailable=isAvailable, cid=cid)
-        new_Data.append(stationary)
-
-    try:
-        # Add the list of new categories to the database session and commit the transaction
-        db.session.add_all(new_Data)
-        db.session.commit()
-        return jsonify({"message": "Category added successfully."}), 201
-    except IntegrityError as e:
-        # If a unique constraint violation occurs, roll back the transaction
-        db.session.rollback()
-        return jsonify({"error": str(e.__cause__)}), 400
-
-
 # Delete a stationary item by ID
 @stationary_bp.route('/stationary/<int:id>', methods=['DELETE'])
-def delete_stationary(id):
-    stationary = Stationary.query.filter_by(id=id).first()
+def delete_stationary(stationary_id):
+    stationary = MasterStationaryList.query.filter_by(id=stationary_id).first()
     if not stationary:
         return jsonify({"error": "Stationary item not found."}), 404
 
@@ -46,21 +17,6 @@ def delete_stationary(id):
     db.session.commit()
 
     return jsonify({"message": "Stationary item deleted successfully."}), 200
-
-
-@stationary_bp.route('/stationary', methods=['GET'])
-def get_stationary():
-    # Fetch all stationary items and their associated category name
-    stationary = Stationary.query.all()
-    return jsonify([
-        {
-            "id": s.id,
-            "name": s.name,
-            "isAvailable": s.isAvailable,
-            "category": s.category.name
-        }
-        for s in stationary
-    ])
 
 
 # Add master fruits list
@@ -71,14 +27,15 @@ def add_master_stationary_list():
     # Create a list to store new user objects
     new_Data = []
     for stationary_data in data:
-        stationary_id = stationary_data.get("id")
         name = stationary_data.get("name")
         icon = stationary_data.get("icon")
+        isAvailable = stationary_data.get("isAvailable")
+        last_updated_by = stationary_data.get('last_updated_by')
 
-        if not stationary_id:
-            return jsonify({"error": "Id is required."}), 400
+        if not name or not last_updated_by:
+            return jsonify({"error": "Name and Last Updated By required."}), 400
 
-        stationary = MasterStationaryList(id=stationary_id, name=name, icon=icon)
+        stationary = MasterStationaryList(name=name, icon=icon, isAvailable=isAvailable, last_updated_by=last_updated_by)
         new_Data.append(stationary)
 
     try:
@@ -101,6 +58,36 @@ def get_master_stationary_list():
             "id": f.id,
             "name": f.name,
             "icon": f.icon,
+            "isAvailable": f.isAvailable,
+            "last_updated_by": f.last_updated_by
         }
         for f in stationary
     ])
+
+@stationary_bp.route('/update_stationary_availability', methods=['POST'])
+def update_stationary_availability():
+    # Get the incoming JSON data
+    data = request.json
+
+    if not isinstance(data, list):
+        return jsonify({'error': 'Expected a list of items to update'}), 400
+
+    # Loop through the data and update the database
+    for item in data:
+        # Ensure the item has the required keys
+        if 'name' in item and 'isAvailable' in item:
+            # Find the corresponding fruit by name
+            fruit = MasterStationaryList.query.filter_by(name=item['name']).first()
+
+            if fruit:
+                # Update the isAvailable status
+                fruit.isAvailable = item['isAvailable']
+            else:
+                return jsonify({'error': f"Fruit with name '{item['name']}' not found"}), 404
+        else:
+            return jsonify({'error': 'Each item must have "name" and "isAvailable" keys'}), 400
+
+    # Commit the changes to the database
+    db.session.commit()
+
+    return jsonify({'status': 'success', 'message': 'Availability updated successfully'}), 200

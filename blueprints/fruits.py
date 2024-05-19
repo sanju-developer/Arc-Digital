@@ -1,44 +1,15 @@
 from flask import Blueprint, request, jsonify
 from sqlalchemy.exc import IntegrityError
 
-from models.models import db, Fruits, MasterFruitsList
+from models.models import db, MasterFruitsList
 
 fruits_bp = Blueprint('fruits', __name__)
 
 
-# Add multiple fruits
-@fruits_bp.route('/add_fruits', methods=['POST'])
-def add_fruit():
-    data = request.json  # Assuming the data comes as JSON
-
-    # Create a list to store new user objects
-    new_Data = []
-    for user_data in data:
-        name = user_data.get("name")
-        isAvailable = user_data.get("isAvailable")
-        cid = user_data.get("cid")
-
-        if not name or not cid:
-            return jsonify({"error": "Name and Category ID are required."}), 400
-
-        stationary = Fruits(name=name, isAvailable=isAvailable, cid=cid)
-        new_Data.append(stationary)
-
-    try:
-        # Add the list of new categories to the database session and commit the transaction
-        db.session.add_all(new_Data)
-        db.session.commit()
-        return jsonify({"message": "Fruits added successfully."}), 201
-    except IntegrityError as e:
-        # If a unique constraint violation occurs, roll back the transaction
-        db.session.rollback()
-        return jsonify({"error": str(e.__cause__)}), 400
-
-
 # Delete a fruit by ID
 @fruits_bp.route('/fruits/<int:id>', methods=['DELETE'])
-def delete_fruit(id):
-    fruit = Fruits.query.filter_by(id=id).first()
+def delete_fruit(fruit_id):
+    fruit = MasterFruitsList.query.filter_by(id=fruit_id).first()
     if not fruit:
         return jsonify({"error": "Fruit not found."}), 404
 
@@ -46,21 +17,6 @@ def delete_fruit(id):
     db.session.commit()
 
     return jsonify({"message": "Fruit deleted successfully."}), 200
-
-
-@fruits_bp.route('/fruits', methods=['GET'])
-def get_fruits():
-    # Fetch all fruits and their associated category name
-    fruits = Fruits.query.all()
-    return jsonify([
-        {
-            "id": f.id,
-            "name": f.name,
-            "isAvailable": f.isAvailable,
-            "category": f.category.name
-        }
-        for f in fruits
-    ])
 
 
 # Add master fruits list
@@ -71,14 +27,15 @@ def add_master_fruit_list():
     # Create a list to store new user objects
     new_Data = []
     for fruits_data in data:
-        fruit_id = fruits_data.get("id")
         name = fruits_data.get("name")
         icon = fruits_data.get("icon")
+        isAvailable = fruits_data.get("isAvailable")
+        last_updated_by = fruits_data.get('last_updated_by')
 
-        if not fruit_id:
-            return jsonify({"error": "Id is required."}), 400
+        if not name or not last_updated_by:
+            return jsonify({"error": "Name and Last Updated By required."}), 400
 
-        stationary = MasterFruitsList(id=fruit_id, name=name, icon=icon)
+        stationary = MasterFruitsList(name=name, icon=icon, isAvailable=isAvailable, last_updated_by=last_updated_by)
         new_Data.append(stationary)
 
     try:
@@ -101,7 +58,37 @@ def get_master_fruit_list():
             "id": f.id,
             "name": f.name,
             "icon": f.icon,
+            "isAvailable": f.isAvailable,
+            "last_updated_by": f.last_updated_by
         }
         for f in fruits
     ])
 
+
+@fruits_bp.route('/update_fruits_availability', methods=['POST'])
+def update_fruits_availability():
+    # Get the incoming JSON data
+    data = request.json
+
+    if not isinstance(data, list):
+        return jsonify({'error': 'Expected a list of items to update'}), 400
+
+    # Loop through the data and update the database
+    for item in data:
+        # Ensure the item has the required keys
+        if 'name' in item and 'isAvailable' in item:
+            # Find the corresponding fruit by name
+            fruit = MasterFruitsList.query.filter_by(name=item['name']).first()
+
+            if fruit:
+                # Update the isAvailable status
+                fruit.isAvailable = item['isAvailable']
+            else:
+                return jsonify({'error': f"Fruit with name '{item['name']}' not found"}), 404
+        else:
+            return jsonify({'error': 'Each item must have "name" and "isAvailable" keys'}), 400
+
+    # Commit the changes to the database
+    db.session.commit()
+
+    return jsonify({'status': 'success', 'message': 'Availability updated successfully'}), 200
