@@ -5,9 +5,9 @@ from flask import Flask
 from flask_cors import CORS, cross_origin
 
 from blueprints.feedback import feedback_bp
+from blueprints.orders import orders_bp
 from blueprints.users import users_bp
 from models.models import db
-from blueprints.categories import category_bp
 from blueprints.fruits import fruits_bp
 from blueprints.stationary import stationary_bp
 
@@ -28,11 +28,11 @@ with app.app_context():
     db.create_all()
 
 # Register the blueprints
-app.register_blueprint(category_bp, url_prefix='/api')
 app.register_blueprint(fruits_bp, url_prefix='/api')
 app.register_blueprint(stationary_bp, url_prefix='/api')
 app.register_blueprint(users_bp, url_prefix='/api')
 app.register_blueprint(feedback_bp, url_prefix='/api')
+app.register_blueprint(orders_bp, url_prefix='/api')
 
 @app.route('/')
 def index():

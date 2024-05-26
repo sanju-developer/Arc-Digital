@@ -53,16 +53,23 @@ def add_master_fruit_list():
 def get_master_fruit_list():
     # Fetch all fruits and their associated category name
     fruits = MasterFruitsList.query.all()
-    return jsonify([
-        {
+    fruits_list = []
+    for f in fruits:
+        fruits_data = {
             "id": f.id,
             "name": f.name,
             "icon": f.icon,
             "isAvailable": f.isAvailable,
-            "last_updated_by": f.last_updated_by
+            'last_updated_by': {
+                'user_id': f.user.user_id,
+                'name': f.user.name,
+                'branch': f.user.branch,
+                'username': f.user.username,
+                'isAdmin': f.user.isAdmin
+            }
         }
-        for f in fruits
-    ])
+        fruits_list.append(fruits_data)
+    return jsonify(fruits_list), 200
 
 
 @fruits_bp.route('/update_fruits_availability', methods=['POST'])
@@ -76,17 +83,18 @@ def update_fruits_availability():
     # Loop through the data and update the database
     for item in data:
         # Ensure the item has the required keys
-        if 'name' in item and 'isAvailable' in item:
+        if 'name' in item and 'isAvailable' in item and 'last_updated_by' in item:
             # Find the corresponding fruit by name
             fruit = MasterFruitsList.query.filter_by(name=item['name']).first()
 
             if fruit:
                 # Update the isAvailable status
                 fruit.isAvailable = item['isAvailable']
+                fruit.last_updated_by = item['last_updated_by']
             else:
                 return jsonify({'error': f"Fruit with name '{item['name']}' not found"}), 404
         else:
-            return jsonify({'error': 'Each item must have "name" and "isAvailable" keys'}), 400
+            return jsonify({'error': 'Each item must have "name", "isAvailable" and "last_updated_by" keys'}), 400
 
     # Commit the changes to the database
     db.session.commit()

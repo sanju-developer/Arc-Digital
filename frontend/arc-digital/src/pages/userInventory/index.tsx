@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { observer } from 'mobx-react';
 import dayjs from 'dayjs';
 
-import { Grid, Typography } from '@mui/material';
+import { Grid } from '@mui/material';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
@@ -13,7 +13,7 @@ import { withBanner } from '../../hoc/withBanner';
 import Store from '../../store';
 import Fruits from './fruits';
 import Stationary from './stationary';
-import DateTimePickerValue from '../../components/dateTimePicker';
+
 
 interface Masterdata { fruits: Record<string, any>[], stationary: Record<string, any>[] }
 
@@ -23,8 +23,6 @@ function UserInventory() {
     const { masterStationaryList = [], masterFruitList = [] } = data
     const [masterData, setMasterData] = useState<Masterdata>({ fruits: [], stationary: [] })
     const [category, setCategory] = React.useState('fruits');
-    const [addInventory, setAddInventory] = useState({ date: dayjs() })
-    // const [value, setValue] = React.useState<Dayjs | null>(dayjs('2022-04-17T15:30'));
 
     useEffect(() => {
         getCategories()
@@ -89,9 +87,6 @@ function UserInventory() {
                     {category === 'stationary' &&
                         <Stationary masterData={masterData} handleCardClick={handleCardClick} update={update} />
                     }
-                    <Container>
-                        {/* <DateTimePickerValue /> */}
-                    </Container>
                 </Grid>
             </Grid>
         </Container>

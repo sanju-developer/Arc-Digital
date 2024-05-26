@@ -33,7 +33,7 @@ function Feedback() {
 			try {
 				const result = await addFeedback({
 					category: feedbackForm.category,
-					user_id: selectedUser.user_id,
+					feedback_by: selectedUser.user_id,
 					rating: feedbackForm.rating,
 					comment: feedbackForm.comment
 				});

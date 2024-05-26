@@ -31,7 +31,7 @@ function Stationary(props: FruitsStationaryProps) {
                     </Card>
                 </Grid>)}
             </Grid>
-            {masterData.stationary.length === 0 && <Typography variant="h2" component="div">
+            {masterData.stationary.length === 0 && <Typography variant="h2" component="p">
                 No Stationary Available
             </Typography>}
             <Button variant="outlined" onClick={() => update('stationary')} sx={{ mt: 2 }} disabled={isLoadingUpdateInventory}>

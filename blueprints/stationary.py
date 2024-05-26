@@ -53,16 +53,23 @@ def add_master_stationary_list():
 def get_master_stationary_list():
     # Fetch all fruits and their associated category name
     stationary = MasterStationaryList.query.all()
-    return jsonify([
-        {
-            "id": f.id,
-            "name": f.name,
-            "icon": f.icon,
-            "isAvailable": f.isAvailable,
-            "last_updated_by": f.last_updated_by
+    stationary_list = []
+    for s in stationary:
+        stationary_data = {
+            "id": s.id,
+            "name": s.name,
+            "icon": s.icon,
+            "isAvailable": s.isAvailable,
+            'last_updated_by': {
+                'user_id': s.user.user_id,
+                'name': s.user.name,
+                'branch': s.user.branch,
+                'username': s.user.username,
+                'isAdmin': s.user.isAdmin
+            }
         }
-        for f in stationary
-    ])
+        stationary_list.append(stationary_data)
+    return jsonify(stationary_list), 200
 
 @stationary_bp.route('/update_stationary_availability', methods=['POST'])
 def update_stationary_availability():
@@ -75,17 +82,18 @@ def update_stationary_availability():
     # Loop through the data and update the database
     for item in data:
         # Ensure the item has the required keys
-        if 'name' in item and 'isAvailable' in item:
+        if 'name' in item and 'isAvailable' in item and 'last_updated_by' in item:
             # Find the corresponding fruit by name
-            fruit = MasterStationaryList.query.filter_by(name=item['name']).first()
+            stationary = MasterStationaryList.query.filter_by(name=item['name']).first()
 
-            if fruit:
+            if stationary:
                 # Update the isAvailable status
-                fruit.isAvailable = item['isAvailable']
+                stationary.isAvailable = item['isAvailable']
+                stationary.last_updated_by = item['last_updated_by']
             else:
                 return jsonify({'error': f"Fruit with name '{item['name']}' not found"}), 404
         else:
-            return jsonify({'error': 'Each item must have "name" and "isAvailable" keys'}), 400
+            return jsonify({'error': 'Each item must have "name", "isAvailable" and "last_updated_by" keys'}), 400
 
     # Commit the changes to the database
     db.session.commit()
