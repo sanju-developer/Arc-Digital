@@ -35,7 +35,7 @@ app.register_blueprint(feedback_bp, url_prefix='/api')
 app.register_blueprint(orders_bp, url_prefix='/api')
 
 @app.route('/')
-def index():
+def home():
     return 'Hello, Arcesium!!'
 
 
