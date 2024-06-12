@@ -10,7 +10,6 @@ function App() {
 	return (
 		<React.Fragment>
 			<ToastContainer hideProgressBar />
-
 			<Routing />
 		</React.Fragment>
 	);

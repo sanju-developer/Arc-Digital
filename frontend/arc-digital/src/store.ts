@@ -105,7 +105,7 @@ class Store {
 			const data = await response.json();
 			this.data.feedback = data;
 			this.isLoading.feedback = false;
-			return Promise.resolve('Feedback saved successfully')
+			return Promise.resolve(data?.message)
 		} catch (error) {
 			this.isLoading.feedback = false;
 			return await Promise.reject('There was some issue while saving the feedback.')
@@ -113,28 +113,64 @@ class Store {
 	};
 
 		// add inventory
-		updateInventory = async (payload: Record<string, any>, url:string) => {
-			this.isLoading.updateInventory = true; // Set loading state
-			this.error.updateInventory = null;
+	updateInventory = async (payload: Record<string, any>, url:string) => {
+		this.isLoading.updateInventory = true; // Set loading state
+		this.error.updateInventory = null;
+
+		try {
+			const response = await fetch(`http://127.0.0.1:8000/api/${url}`, {
+				method: 'POST', // Set the HTTP method to POST
+				headers: {
+					'Content-Type': 'application/json' // Specify that we're sending JSON
+				},
+				body: JSON.stringify(payload) // Convert the data object to a JSON string
+			});
+
+			const data = await response.json();
+			this.data.updateInventory = data;
+			this.isLoading.updateInventory = false;
+			if(data?.message){
+				return Promise.resolve({success: data?.message})
+			}
+			return Promise.resolve({error:data?.error})
+		} catch (error) {
+			this.isLoading.updateInventory = false;
+			return Promise.reject('There was some issue while saving the inventory.')
+		}
+	};
+
+		// Fetch list of feedbacks
+		getFeedbacks = async () => {
+			this.isLoading.feedbacks = true; // Set loading state
+			this.error.feedbacks = null;
 	
 			try {
-				const response = await fetch(`http://127.0.0.1:8000/api/${url}`, {
-					method: 'POST', // Set the HTTP method to POST
-					headers: {
-						'Content-Type': 'application/json' // Specify that we're sending JSON
-					},
-					body: JSON.stringify(payload) // Convert the data object to a JSON string
-				});
-	
+				const response = await fetch('http://127.0.0.1:8000/api/feedbacks'); // Your API endpoint
 				const data = await response.json();
-				this.data.updateInventory = data;
-				this.isLoading.updateInventory = false;
-				return Promise.resolve('Inventory saved successfully')
+				this.data.feedbacks = data;
+				this.isLoading.feedbacks = false;
 			} catch (error) {
-				this.isLoading.updateInventory = false;
-				return await Promise.reject('There was some issue while saving the inventory.')
+				this.isLoading.feedbacks = false;
+				this.error.feedbacks = 'Failed to fetch data';
+			}
+		};
+
+		// Fetch list of orders
+		getOrders = async () => {
+			this.isLoading.orders = true; // Set loading state
+			this.error.orders = null;
+	
+			try {
+				const response = await fetch('http://127.0.0.1:8000/api/orders'); // Your API endpoint
+				const data = await response.json();
+				this.data.orders = data;
+				this.isLoading.orders = false;
+			} catch (error) {
+				this.isLoading.orders = false;
+				this.error.orders = 'Failed to fetch data';
 			}
 		};
 }
 
+// eslint-disable-next-line import/no-anonymous-default-export
 export default new Store(); // Export a singleton instance of the store

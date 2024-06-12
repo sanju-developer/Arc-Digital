@@ -24,7 +24,7 @@ export const cardsData = [
 		title: 'Feedback',
 		description:
 			"Your feedback is important to us! To ensure that we continue providing high-quality meals for our employees, we encourage you to share your thoughts on our Lunch, Breakfast, and Dinner services. By completing this form, you help us understand what we're doing well and where we can improve.",
-		route: '/dashboard/feedback',
+		route: '/dashboard/postFeedback',
 		color: '#ecff4b',
 		icon: <ChatOutlinedIcon />
 	},

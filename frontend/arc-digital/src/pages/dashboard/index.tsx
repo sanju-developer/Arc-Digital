@@ -17,7 +17,7 @@ function Dashboard() {
     const { selectedUser } = Store;
 
     const getRoute = (route: string) => {
-        if (selectedUser ?.isAdmin) {
+        if (selectedUser?.isAdmin) {
             return route
         }
         if (route === '/dashboard/updateInventory') {

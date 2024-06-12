@@ -5,5 +5,5 @@ interface FruirtsStationaryCommonProps {
 export interface FruitsStationaryProps {
     masterData: FruirtsStationaryCommonProps;
     handleCardClick: (type: string, id: string) => void;
-    update: (type: string) => void;
+    update?: (type: string) => void;
 }

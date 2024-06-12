@@ -18,8 +18,8 @@ function Fruits(props: FruitsStationaryProps) {
         {isMasterFruitListLoading && <CircularProgress color="inherit" />}
         <Grid container spacing={2} textAlign="center" mt={4}>
             {masterData.fruits?.length > 0 && masterData.fruits.map((mfl) => <Grid key={mfl.id} item xl={3} md={3} sm={3} >
-                <Card sx={{ mr: 2, mb: 2, boxShadow: cardBoxShadow, opacity: !mfl.isAvailable ? opacity : 1 }} onClick={() => handleCardClick('fruits', mfl.id)}>
-                    <CardActionArea>
+                <Card sx={{ mr: 2, mb: 2, boxShadow: cardBoxShadow, opacity: !mfl.isAvailable ? opacity : 1 }}>
+                    <CardActionArea onClick={() => handleCardClick('fruits', mfl.id)}>
                         <Box sx={{ fontSize: 48, pt: 2 }}>{mfl.icon}</Box>
                         <CardContent sx={{ pt: 0 }}>
                             <Typography gutterBottom variant="body2" component="div">
@@ -33,7 +33,7 @@ function Fruits(props: FruitsStationaryProps) {
         {masterData.fruits.length === 0 && <Typography variant="h2" component="p">
             No Fruits Available
         </Typography>}
-        <Button variant="outlined" onClick={() => update('fruits')} sx={{ mt: 2 }} disabled={isLoadingUpdateInventory}>
+        <Button variant="outlined" onClick={() => update && update('fruits')} sx={{ mt: 2 }} disabled={isLoadingUpdateInventory}>
             {isLoadingUpdateInventory ? <Typography>Updating... <CircularProgress color="inherit" size={16} /></Typography> : 'Update'}
         </Button>
     </>

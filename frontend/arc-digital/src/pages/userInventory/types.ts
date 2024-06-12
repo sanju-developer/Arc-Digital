@@ -1,0 +1,1 @@
+export interface Masterdata { fruits: Record<string, any>[], stationary: Record<string, any>[] }

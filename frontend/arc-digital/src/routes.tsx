@@ -1,23 +1,29 @@
 import * as React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
-import UpdateInventory from './pages/updateInventory'
-import UserInventory from './pages/userInventory'
-import Dashboard from './pages/dashboard'
-import Feedback from './pages/feedback';
-import PageNotFound from './pages/pageNotFound';
+const UpdateInventory = React.lazy(() => import('./pages/updateInventory'))
+const UserInventory = React.lazy(() => import('./pages/userInventory'))
+const Dashboard = React.lazy(() => import('./pages/dashboard'))
+const PostFeedback = React.lazy(() => import('./pages/postFeedback'))
+const PageNotFound = React.lazy(() => import('./pages/pageNotFound'))
+const Orders = React.lazy(() => import('./pages/orders'))
+const Feedbacks = React.lazy(() => import('./pages/feedbacks'))
 
 function Routing() {
 	return (
 		<BrowserRouter basename="/">
-			<Routes>
-				<Route path="/" Component={Dashboard} />
-				<Route path="/dashboard" Component={Dashboard} />
-				<Route path="/dashboard/feedback" Component={Feedback} />
-				<Route path="/dashboard/updateInventory" Component={UpdateInventory} />
-				<Route path="/dashboard/userInventory" Component={UserInventory} />
-				<Route path="*" Component={PageNotFound} />
-			</Routes>
+			<React.Suspense fallback={<p>Loading...</p>}>
+				<Routes>
+					<Route path="/" Component={Dashboard} />
+					<Route path="/dashboard" Component={Dashboard} />
+					<Route path="/dashboard/postFeedback" Component={PostFeedback} />
+					<Route path="/dashboard/updateInventory" Component={UpdateInventory} />
+					<Route path="/dashboard/userInventory" Component={UserInventory} />
+					<Route path="/dashboard/orders" Component={Orders} />
+					<Route path="/dashboard/feedbacks" Component={Feedbacks} />
+					<Route path="*" Component={PageNotFound} />
+				</Routes>
+			</React.Suspense>
 		</BrowserRouter>
 	);
 }

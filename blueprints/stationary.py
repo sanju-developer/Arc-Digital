@@ -98,4 +98,4 @@ def update_stationary_availability():
     # Commit the changes to the database
     db.session.commit()
 
-    return jsonify({'status': 'success', 'message': 'Availability updated successfully'}), 200
+    return jsonify({'status': 'success', 'message': 'Inventory updated successfully'}), 200

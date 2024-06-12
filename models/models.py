@@ -24,6 +24,8 @@ class Users(db.Model):
                                       backref='user')  # 'backref' creates a reverse link
     masterStationaryList = db.relationship('MasterStationaryList',
                                            backref='user')  # 'backref' creates a reverse link
+    orders = db.relationship('Orders',
+                             backref='user')  # 'backref' creates a reverse link
 
 
 class Feedback(db.Model):
@@ -63,9 +65,10 @@ class MasterStationaryList(db.Model):
 
 # Orders model
 class Orders(db.Model):
-    __name__ = 'master_stationary_list'
+    __name__ = 'orders'
     oid = db.Column(UUID(as_uuid=True), primary_key=True, unique=True, default=uuid.uuid4)
     items = db.Column(ARRAY(JSONB), nullable=False)
+    comment = db.Column(db.String, nullable=False)
     dateTime = db.Column(db.DateTime, nullable=False, default=datetime.utcnow())
     # Foreign key linking to user_id in the Users table
     ordered_by = db.Column(db.Integer, db.ForeignKey('users.user_id'))

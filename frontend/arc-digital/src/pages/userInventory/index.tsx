@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { observer } from 'mobx-react';
-import dayjs from 'dayjs';
 
 import { Grid } from '@mui/material';
 import Radio from '@mui/material/Radio';
@@ -13,13 +12,11 @@ import { withBanner } from '../../hoc/withBanner';
 import Store from '../../store';
 import Fruits from './fruits';
 import Stationary from './stationary';
-
-
-interface Masterdata { fruits: Record<string, any>[], stationary: Record<string, any>[] }
-
+import Save from './save';
+import { Masterdata } from './types';
 
 function UserInventory() {
-    const { getCategories, getMasterFruitList, getMasterStationaryList, updateInventory, data, selectedUser } = Store
+    const { getCategories, getMasterFruitList, getMasterStationaryList, data, selectedUser } = Store
     const { masterStationaryList = [], masterFruitList = [] } = data
     const [masterData, setMasterData] = useState<Masterdata>({ fruits: [], stationary: [] })
     const [category, setCategory] = React.useState('fruits');
@@ -33,36 +30,28 @@ function UserInventory() {
 
     useEffect(() => {
         if (masterFruitList.length > 0 && masterStationaryList.length > 0)
-            setMasterData((prevState) => ({
-                ...prevState,
-                fruits: !selectedUser?.isAdmin ? masterFruitList.filter((f: { isAvailable: any; }) => f.isAvailable) : masterFruitList,
-                stationary: !selectedUser?.isAdmin ? masterStationaryList.filter((f: { isAvailable: any; }) => f.isAvailable) : masterStationaryList
-            }))
+            defaultMasterData()
     }, [masterFruitList, masterStationaryList, selectedUser])
-
-    const handleCategory = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setCategory((event.target as HTMLInputElement).value);
-    };
 
     const handleCardClick = (type: string, id: string) => {
         setMasterData((prevState) => ({
             ...prevState,
-            fruits: prevState.fruits.map((f) => f.id === id ? ({ ...f, isAvailable: !f.isAvailable }) : f),
-            stationary: prevState.stationary.map((f) => f.id === id ? ({ ...f, isAvailable: !f.isAvailable }) : f),
+            fruits: masterData.fruits.map((f) => f.id === id ? ({ ...f, taken: !f.taken }) : f),
+            stationary: masterData.stationary.map((m) => m.id === id ? ({ ...m, taken: !m.taken }) : m)
         }))
     }
-    const update = (type: string) => {
-        const fruits = masterData.fruits.filter((f) => f.isAvailable)
-        const stationary = masterData.stationary.filter((f) => f.isAvailable)
-        if (type === 'fruits') {
-            const fruitsPayload = fruits.map((f) => ({ name: f.name, isAvailable: f.isAvailable }))
-            updateInventory(fruitsPayload, 'update_fruits_order')
-            return
-        }
-        const stationaryPayload = stationary.map((f) => ({ name: f.name, isAvailable: f.isAvailable }))
-        updateInventory(stationaryPayload, 'update_stationary_order')
 
+    const handleCategory = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setCategory((event.target as HTMLInputElement).value);
+        defaultMasterData()
+    }
 
+    const defaultMasterData = () => {
+        setMasterData((prevState) => ({
+            ...prevState,
+            fruits: !selectedUser?.isAdmin ? masterFruitList.filter((f: { isAvailable: any; }) => f.isAvailable) : masterFruitList.map((f: any) => ({ ...f, taken: false })),
+            stationary: !selectedUser?.isAdmin ? masterStationaryList.filter((f: { isAvailable: any; }) => f.isAvailable) : masterStationaryList.map((f: any) => ({ ...f, taken: false })),
+        }))
     }
 
     return (
@@ -82,13 +71,14 @@ function UserInventory() {
                 </FormControl></Grid>}
                 <Grid item xl={12} md={12} sm={12} >
                     {category === 'fruits' &&
-                        <Fruits masterData={masterData} handleCardClick={handleCardClick} update={update} />
+                        <Fruits masterData={masterData} handleCardClick={handleCardClick} />
                     }
                     {category === 'stationary' &&
-                        <Stationary masterData={masterData} handleCardClick={handleCardClick} update={update} />
+                        <Stationary masterData={masterData} handleCardClick={handleCardClick} />
                     }
                 </Grid>
             </Grid>
+            <Save masterData={masterData} type={category} />
         </Container>
     );
 }
