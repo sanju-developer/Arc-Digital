@@ -17,7 +17,7 @@ cors = CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
 
 # Database configuration
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://hujqswyd:7c_2pkPK0A-Oi5qWR5kfvtoktHkGYeAC@rosie.db.elephantsql.com/hujqswyd
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://hujqswyd:7c_2pkPK0A-Oi5qWR5kfvtoktHkGYeAC@rosie.db.elephantsql.com/hujqswyd'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Initialize the database with the Flask app
