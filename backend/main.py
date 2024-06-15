@@ -4,12 +4,12 @@ import os
 from flask import Flask
 from flask_cors import CORS, cross_origin
 
-from blueprints.feedback import feedback_bp
-from blueprints.orders import orders_bp
-from blueprints.users import users_bp
+from api.blueprints.feedback import feedback_bp
+from api.blueprints.orders import orders_bp
+from api.blueprints.users import users_bp
 from models.models import db
-from blueprints.fruits import fruits_bp
-from blueprints.stationary import stationary_bp
+from api.blueprints.fruits import fruits_bp
+from api.blueprints.stationary import stationary_bp
 
 load_dotenv()
 app = Flask(__name__)
