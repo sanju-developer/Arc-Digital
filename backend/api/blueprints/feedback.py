@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify
-from models.models import db, Feedback
+
+from ..models.models import Feedback
 
 feedback_bp = Blueprint('feedback', __name__)
 

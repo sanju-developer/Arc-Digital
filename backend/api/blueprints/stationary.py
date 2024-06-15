@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 from sqlalchemy.exc import IntegrityError
 
-from models.models import db, MasterStationaryList
+from ..models.models import db, MasterStationaryList
 
 stationary_bp = Blueprint('stationary', __name__)
 

@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 from sqlalchemy.exc import IntegrityError
 
-from models.models import db, MasterFruitsList
+from ..models.models import db, MasterFruitsList
 
 fruits_bp = Blueprint('fruits', __name__)
 

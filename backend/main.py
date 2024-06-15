@@ -7,7 +7,7 @@ from flask_cors import CORS, cross_origin
 from api.blueprints.feedback import feedback_bp
 from api.blueprints.orders import orders_bp
 from api.blueprints.users import users_bp
-from models.models import db
+from api.models.models import db
 from api.blueprints.fruits import fruits_bp
 from api.blueprints.stationary import stationary_bp
 
