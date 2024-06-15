@@ -1,9 +1,8 @@
 from flask import Blueprint, request, jsonify
 from sqlalchemy.exc import IntegrityError
-from ..models.models import db, Users
+from backend.models.models import db, Users
 
 users_bp = Blueprint('users', __name__)
-
 
 # Route to add multiple users
 @users_bp.route('/add_users', methods=['POST'])

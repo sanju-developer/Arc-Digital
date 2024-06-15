@@ -1,10 +1,9 @@
 from flask import Blueprint, request, jsonify
 from sqlalchemy.exc import IntegrityError
 
-from ..models.models import db, MasterStationaryList
+from backend.models.models import db, MasterStationaryList
 
 stationary_bp = Blueprint('stationary', __name__)
-
 
 # Delete a stationary item by ID
 @stationary_bp.route('/stationary/<int:id>', methods=['DELETE'])

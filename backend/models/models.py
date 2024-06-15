@@ -7,7 +7,6 @@ from sqlalchemy.dialects.postgresql import UUID, ARRAY, JSONB
 # Initialize SQLAlchemy
 db = SQLAlchemy()
 
-
 # user model
 class Users(db.Model):
     __name__ = 'users'

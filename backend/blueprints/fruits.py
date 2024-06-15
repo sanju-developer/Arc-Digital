@@ -1,10 +1,9 @@
 from flask import Blueprint, request, jsonify
 from sqlalchemy.exc import IntegrityError
 
-from models.models import db, MasterFruitsList
+from backend.models.models import db, MasterFruitsList
 
 fruits_bp = Blueprint('fruits', __name__)
-
 
 # Delete a fruit by ID
 @fruits_bp.route('/fruits/<int:id>', methods=['DELETE'])

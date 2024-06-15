@@ -1,8 +1,8 @@
 from flask import Blueprint, request, jsonify
-from ..models.models import db, Orders
+
+from backend.models.models import db, Orders
 
 orders_bp = Blueprint('orders', __name__)
-
 
 @orders_bp.route('/add_order', methods=['POST'])
 def add_order():
