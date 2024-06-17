@@ -30,7 +30,7 @@ class Store {
 		this.error.categories = null;
 
 		try {
-			const response = await fetch('http://127.0.0.1:8000/api/categories'); // Your API endpoint
+			const response = await fetch('http://127.0.0.1:5000/api/categories'); // Your API endpoint
 			const data = await response.json();
 			this.data.categories = data;
 			this.isLoading.categories = false;
@@ -46,7 +46,7 @@ class Store {
 		this.error.users = null;
 
 		try {
-			const response = await fetch('http://127.0.0.1:8000/api/users'); // Your API endpoint
+			const response = await fetch('http://127.0.0.1:5000/api/users'); // Your API endpoint
 			const data = await response.json();
 			this.data.users = data;
 			this.isLoading.users = false;
@@ -62,7 +62,7 @@ class Store {
 		this.error.masterStationaryList = null;
 
 		try {
-			const response = await fetch('http://127.0.0.1:8000/api/master_stationary_list'); // Your API endpoint
+			const response = await fetch('http://127.0.0.1:5000/api/master_stationary_list'); // Your API endpoint
 			const data = await response.json();
 			this.data.masterStationaryList = data;
 			this.isLoading.masterStationaryList = false;
@@ -78,7 +78,7 @@ class Store {
 		this.error.masterFruitList = null;
 
 		try {
-			const response = await fetch('http://127.0.0.1:8000/api/master_fruit_list'); // Your API endpoint
+			const response = await fetch('http://127.0.0.1:5000/api/master_fruit_list'); // Your API endpoint
 			const data = await response.json();
 			this.data.masterFruitList = data;
 			this.isLoading.masterFruitList = false;
@@ -94,7 +94,7 @@ class Store {
 		this.error.feedback = null;
 
 		try {
-			const response = await fetch('http://127.0.0.1:8000/api/feedback', {
+			const response = await fetch('http://127.0.0.1:5000/api/feedback', {
 				method: 'POST', // Set the HTTP method to POST
 				headers: {
 					'Content-Type': 'application/json' // Specify that we're sending JSON
@@ -118,7 +118,7 @@ class Store {
 		this.error.updateInventory = null;
 
 		try {
-			const response = await fetch(`http://127.0.0.1:8000/api/${url}`, {
+			const response = await fetch(`http://127.0.0.1:5000/api/${url}`, {
 				method: 'POST', // Set the HTTP method to POST
 				headers: {
 					'Content-Type': 'application/json' // Specify that we're sending JSON
@@ -145,7 +145,7 @@ class Store {
 			this.error.feedbacks = null;
 	
 			try {
-				const response = await fetch('http://127.0.0.1:8000/api/feedbacks'); // Your API endpoint
+				const response = await fetch('http://127.0.0.1:5000/api/feedbacks'); // Your API endpoint
 				const data = await response.json();
 				this.data.feedbacks = data;
 				this.isLoading.feedbacks = false;
@@ -161,7 +161,7 @@ class Store {
 			this.error.orders = null;
 	
 			try {
-				const response = await fetch('http://127.0.0.1:8000/api/orders'); // Your API endpoint
+				const response = await fetch('http://127.0.0.1:5000/api/orders'); // Your API endpoint
 				const data = await response.json();
 				this.data.orders = data;
 				this.isLoading.orders = false;

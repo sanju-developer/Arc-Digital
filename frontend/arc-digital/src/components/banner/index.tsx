@@ -106,16 +106,20 @@ function Banner() {
 				transformOrigin={{ horizontal: 'right', vertical: 'top' }}
 				anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
 			>
-				{user && user.isAdmin && <><MenuItem onClick={() => navigate('/dashboard/updateInventory')}>
-					<ListItemText>Update Inventory</ListItemText>
+				<MenuItem onClick={() => navigate('/dashboard')}>
+					<ListItemText>Dashboard</ListItemText>
 				</MenuItem>
+				{user && user.isAdmin && <React.Fragment>
+					<MenuItem onClick={() => navigate('/dashboard/updateInventory')}>
+						<ListItemText>Update Inventory</ListItemText>
+					</MenuItem>
 					<MenuItem onClick={() => navigate('/dashboard/feedbacks')}>
 						<ListItemText>Feedbacks</ListItemText>
 					</MenuItem>
 					<MenuItem onClick={() => navigate('/dashboard/orders')}>
 						<ListItemText>Orders</ListItemText>
 					</MenuItem>
-				</>}
+				</React.Fragment>}
 				<MenuItem onClick={logout}>
 					<ListItemText>Logout</ListItemText>
 				</MenuItem>

@@ -7,10 +7,11 @@ import { customStyles } from './constants';
 interface RatingFacesProps {
 	rating: number;
 	setRating: (val: number) => void;
+	readOnly?: boolean
 }
 
 export default function RatingFaces(props: RatingFacesProps) {
-	const { rating = 0, setRating } = props;
+	const { rating = 0, setRating, readOnly = false } = props;
 
 	return (
 		<Rating
@@ -20,8 +21,10 @@ export default function RatingFaces(props: RatingFacesProps) {
 			itemStyles={customStyles}
 			items={4}
 			highlightOnlySelected
-			spaceBetween="medium"
 			transition="zoom"
+			isDisabled={readOnly}
+			spaceInside={'small'}
+			spaceBetween={'medium'}
 		/>
 	);
 }
